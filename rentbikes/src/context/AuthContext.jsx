@@ -1,21 +1,22 @@
-import { createContext, useState, useContext, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('currentUser');
+    const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         if (parsedUser.token) {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
+          axios.defaults.headers.common["Authorization"] =
+            `Bearer ${parsedUser.token}`;
         }
         return parsedUser;
       } catch (e) {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem("currentUser");
       }
     }
     return null;
@@ -25,16 +26,17 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('currentUser');
+    const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
         if (parsedUser.token) {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${parsedUser.token}`;
+          axios.defaults.headers.common["Authorization"] =
+            `Bearer ${parsedUser.token}`;
         }
         setUser(parsedUser);
       } catch (e) {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem("currentUser");
       }
     }
     setLoading(false);
@@ -43,10 +45,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        "https://bike-rental-booking-system-3.onrender.com/api/auth/login",
+        {
+          email,
+          password,
+        },
+      );
 
       const { token, user: userDataFromBackend } = res.data;
 
@@ -59,9 +64,9 @@ export const AuthProvider = ({ children }) => {
       };
 
       setUser(fullUserData);
-      localStorage.setItem('currentUser', JSON.stringify(fullUserData));
+      localStorage.setItem("currentUser", JSON.stringify(fullUserData));
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       return fullUserData;
     } catch (err) {
@@ -73,9 +78,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('currentUser');
-    delete axios.defaults.headers.common['Authorization'];
-    navigate('/login');
+    localStorage.removeItem("currentUser");
+    delete axios.defaults.headers.common["Authorization"];
+    navigate("/login");
   };
 
   return (

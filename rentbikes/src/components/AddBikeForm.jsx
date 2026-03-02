@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
 const AddBikeForm = () => {
   const { user } = useAuth();
   const [formData, setFormData] = useState({
-    name: '',
-    type: 'Road Bike',
-    rentalPricePerHour: '',
-    imageUrl: '',
+    name: "",
+    type: "Road Bike",
+    rentalPricePerHour: "",
+    imageUrl: "",
   });
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,34 +20,34 @@ const AddBikeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
-    setError('');
+    setMessage("");
+    setError("");
 
     if (!user || !user.token) {
-      setError('Authentication token is missing. Please log in again.');
+      setError("Authentication token is missing. Please log in again.");
       return;
     }
 
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/admin/bikes',
+        "https://bike-rental-booking-system-3.onrender.com/api/admin/bikes",
         formData,
         {
           headers: {
-            'Authorization': `Bearer ${user.token}`,
-            'Content-Type': 'application/json',
+            Authorization: `Bearer ${user.token}`,
+            "Content-Type": "application/json",
           },
-        }
+        },
       );
       setMessage(res.data.message);
       setFormData({
-        name: '',
-        type: 'Road Bike',
-        rentalPricePerHour: '',
-        imageUrl: '',
+        name: "",
+        type: "Road Bike",
+        rentalPricePerHour: "",
+        imageUrl: "",
       });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add bike.');
+      setError(err.response?.data?.message || "Failed to add bike.");
     }
   };
 

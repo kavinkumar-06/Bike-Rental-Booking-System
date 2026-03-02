@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
-import Toast from '../components/Toast';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import Toast from "../components/Toast";
+import API from "../utils/Api";
 
 const RegisterPage = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState({ message: '', type: '' });
+  const [toast, setToast] = useState({ message: "", type: "" });
   const navigate = useNavigate();
 
   const showToast = (message, type) => {
@@ -22,21 +23,24 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:5000/api/auth/register', { username, email, password });
-
-      showToast('Registration successful! You can now log in.', 'success');
+      // await axios.post('https://bike-rental-booking-system-3.onrender.com/api/auth/register', { username, email, password });
+      await API.post("/auth/register", { username, email, password });
+      showToast("Registration successful! You can now log in.", "success");
 
       setLoading(false);
 
-      navigate('/login');
-
+      navigate("/login");
     } catch (err) {
-      if (err.response && err.response.status === 400 && err.response.data.errors) {
+      if (
+        err.response &&
+        err.response.status === 400 &&
+        err.response.data.errors
+      ) {
         const errors = {};
-        err.response.data.errors.forEach(message => {
-          if (message.toLowerCase().includes('username')) {
+        err.response.data.errors.forEach((message) => {
+          if (message.toLowerCase().includes("username")) {
             errors.username = message;
-          } else if (message.toLowerCase().includes('email')) {
+          } else if (message.toLowerCase().includes("email")) {
             errors.email = message;
           } else {
             errors.password = message;
@@ -44,7 +48,11 @@ const RegisterPage = () => {
         });
         setFormErrors(errors);
       } else {
-        setFormErrors({ general: err.response?.data?.message || 'Registration failed. Please try again.' });
+        setFormErrors({
+          general:
+            err.response?.data?.message ||
+            "Registration failed. Please try again.",
+        });
       }
       setLoading(false);
     }
@@ -55,7 +63,7 @@ const RegisterPage = () => {
       <Toast
         message={toast.message}
         type={toast.type}
-        onDismiss={() => setToast({ message: '', type: '' })}
+        onDismiss={() => setToast({ message: "", type: "" })}
       />
       <div className="flex flex-col justify-center items-center min-h-screen pt-24">
         <div className="bg-white p-10 rounded-lg shadow-xl w-full max-w-sm">
@@ -63,31 +71,40 @@ const RegisterPage = () => {
             Create an Account
           </h2>
           {formErrors.general && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <div
+              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+              role="alert"
+            >
               <span className="block sm:inline">{formErrors.general}</span>
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Username
+              </label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out ${formErrors.username ? 'border-red-500' : 'border-gray-300 focus:border-transparent'}`}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out ${formErrors.username ? "border-red-500" : "border-gray-300 focus:border-transparent"}`}
                 required
               />
               {formErrors.username && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.username}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {formErrors.username}
+                </p>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
+              </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out ${formErrors.email ? 'border-red-500' : 'border-gray-300 focus:border-transparent'}`}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out ${formErrors.email ? "border-red-500" : "border-gray-300 focus:border-transparent"}`}
                 required
               />
               {formErrors.email && (
@@ -95,16 +112,20 @@ const RegisterPage = () => {
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out ${formErrors.password ? 'border-red-500' : 'border-gray-300 focus:border-transparent'}`}
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out ${formErrors.password ? "border-red-500" : "border-gray-300 focus:border-transparent"}`}
                 required
               />
               {formErrors.password && (
-                <p className="text-red-500 text-xs mt-1">{formErrors.password}</p>
+                <p className="text-red-500 text-xs mt-1">
+                  {formErrors.password}
+                </p>
               )}
             </div>
             <button
@@ -112,13 +133,16 @@ const RegisterPage = () => {
               className="w-full bg-gray-900 text-white font-semibold py-2 px-4 rounded-md hover:bg-gray-800 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg"
               disabled={loading}
             >
-              {loading ? 'Registering...' : 'Register'}
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
           <div className="mt-6 text-center text-sm">
             <p className="text-gray-600">
-              Already have an account?{' '}
-              <Link to="/login" className="text-gray-900 hover:text-gray-800 font-medium">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-gray-900 hover:text-gray-800 font-medium"
+              >
                 Login here
               </Link>
             </p>
