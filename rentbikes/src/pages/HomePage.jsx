@@ -46,11 +46,14 @@ const HomePage = () => {
   const fetchBikesByType = async (type) => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/bikes", {
-        params: {
-          type: type,
+      const response = await axios.get(
+        "https://bike-rental-booking-system-3.onrender.com/api/bikes",
+        {
+          params: {
+            type: type,
+          },
         },
-      });
+      );
       setBikes(response.data);
       setActiveFilter(type);
       setShowDropdown(false);
@@ -85,12 +88,15 @@ const HomePage = () => {
     setDateWarning("");
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:5000/api/bikes", {
-        params: {
-          fromDate,
-          toDate,
+      const response = await axios.get(
+        "https://bike-rental-booking-system-3.onrender.com/api/bikes",
+        {
+          params: {
+            fromDate,
+            toDate,
+          },
         },
-      });
+      );
       setBikes(response.data);
       setActiveFilter("Bikes for Your Selected Period");
     } catch (error) {
@@ -273,6 +279,7 @@ const HomePage = () => {
                   <p className="text-gray-600">{bike.type} </p>
                   <p className="text-blue-500 font-bold mt-2">
                     ₹{bike.rentalPricePerHour} / hour
+                    
                   </p>
                   <p
                     className={`mt-2 ${bike.availability ? "text-green-500" : "text-red-500"}`}
